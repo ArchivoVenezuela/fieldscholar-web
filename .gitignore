@@ -1,0 +1,17 @@
+logs
+*.log
+npm-debug.log*
+node_modules
+dist
+dist-ssr
+.next
+.wrangler
+.vinext
+.vercel
+*.local
+.env*
+.DS_Store
+.firebase/
+.idea
+.vscode/*
+!.vscode/extensions.json

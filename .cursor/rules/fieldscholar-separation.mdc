@@ -1,0 +1,29 @@
+---
+description: Keep FieldScholar app and marketing website operationally isolated
+alwaysApply: true
+---
+
+# FieldScholar repository separation
+
+This repository contains the public FieldScholar marketing website.
+
+The related FieldScholar application lives at `../fieldscholar`.
+
+`../fieldscholar` is READ-ONLY context unless the user explicitly instructs otherwise.
+
+## While working in fieldscholar-web
+
+- Never modify `../fieldscholar`.
+- Never delete, move, rename, format, build, or deploy `../fieldscholar`.
+- Never change the application's Firebase Hosting configuration.
+- Never deploy the existing FieldScholar application.
+- Never run an unscoped Firebase deployment (`firebase deploy` without `--only`).
+- Marketing deployments must target only the marketing Hosting target: `firebase deploy --only hosting:marketing`.
+- `fieldscholar.app` belongs to the existing application.
+- `www.fieldscholar.app` belongs to the public marketing website.
+
+## Safe checks before any write or deploy
+
+1. Confirm `git rev-parse --show-toplevel` is this repository (`fieldscholar-web`).
+2. Confirm the Hosting target is `marketing` and that it does not point at the app Hosting site.
+3. Never include files from `../fieldscholar` in this repository's commits.

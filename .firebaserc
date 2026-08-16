@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "fieldscholar-d83ba"
+  },
+  "targets": {
+    "fieldscholar-d83ba": {
+      "hosting": {
+        "marketing": [
+          "fieldscholar-web"
+        ]
+      }
+    }
+  }
+}
