@@ -20,7 +20,7 @@ The related FieldScholar application lives at `../fieldscholar`.
 - Never run an unscoped Firebase deployment (`firebase deploy` without `--only`).
 - Marketing deployments must target only the marketing Hosting target: `firebase deploy --only hosting:marketing`.
 - `fieldscholar.app` belongs to the existing application.
-- `www.fieldscholar.app` belongs to the public marketing website.
+- `about.fieldscholar.app` belongs to the public marketing website.
 
 ## Safe checks before any write or deploy
 

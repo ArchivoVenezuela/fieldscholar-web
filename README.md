@@ -7,7 +7,7 @@ This repository is separate from the FieldScholar application (`../fieldscholar`
 | Surface | URL | Repository |
 | --- | --- | --- |
 | Application | https://fieldscholar.app | `fieldscholar` |
-| Public website | https://www.fieldscholar.app | `fieldscholar-web` |
+| Public website | https://about.fieldscholar.app | `fieldscholar-web` |
 
 ## Local development
 

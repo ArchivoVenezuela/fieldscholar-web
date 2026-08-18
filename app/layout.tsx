@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.fieldscholar.app"),
+  metadataBase: new URL("https://about.fieldscholar.app"),
   title: "FieldScholar — A Global Learning Companion",
   description: "FieldScholar brings program information, experiential learning, communication, and safety into one mobile-first companion for international and field-based education.",
   alternates: { canonical: "/" },
