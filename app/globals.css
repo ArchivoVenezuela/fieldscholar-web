@@ -13,3 +13,6 @@
 @media(max-width:900px){.safe-visual{position:relative;top:auto;order:-1;margin-bottom:20px}.hero-editorial img{aspect-ratio:3/2}.journal-photo{min-height:auto;aspect-ratio:4/3}}
 @media(max-width:520px){.hero-editorial{margin-top:15px}.hero-editorial img{aspect-ratio:1/1;object-position:center}.safe-visual img{border-width:6px}.journal-photo{aspect-ratio:1/1}.image-caption{line-height:1.5}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+.hp{position:absolute;left:-10000px;height:0;width:0;overflow:hidden;opacity:0}
+.form-error{color:#9b1c1c;font-size:13px;margin:0 0 18px;letter-spacing:0}
+button.primary:disabled{opacity:.6;cursor:wait}

@@ -13,7 +13,70 @@ const pillars = [
 export default function Home() {
   const [menu, setMenu] = useState(false);
   const [sent, setSent] = useState(false);
-  function submit(e: FormEvent<HTMLFormElement>) { e.preventDefault(); setSent(true); }
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSendError("");
+    const form = new FormData(e.currentTarget);
+    if (String(form.get("company_website") ?? "").trim()) {
+      setSent(true);
+      return;
+    }
+    const field = (name: string) => String(form.get(name) ?? "").trim();
+    const name = field("name");
+    const institution = field("institution");
+    const role = field("role");
+    const email = field("email");
+    const type = field("type");
+    const participants = field("participants");
+    const whereWhen = field("where-when");
+    const improve = field("improve");
+    const message = field("message");
+    const subject = institution
+      ? `FieldScholar pilot inquiry — ${institution}`
+      : "FieldScholar pilot inquiry";
+    setSending(true);
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/fieldscholar.info@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        referrerPolicy: "origin",
+        body: JSON.stringify({
+          _subject: subject,
+          _template: "box",
+          _captcha: "false",
+          name,
+          institution,
+          role,
+          email,
+          type,
+          participants,
+          whereWhen,
+          improve,
+          message,
+        }),
+      });
+      const payload = (await res.json().catch(() => ({}))) as { success?: boolean | string; message?: string };
+      const ok = payload.success === true || payload.success === "true";
+      const activation = /activat/i.test(payload.message ?? "");
+      if (ok) {
+        setSent(true);
+        return;
+      }
+      if (activation) {
+        setSendError(
+          "Check fieldscholar.info@gmail.com for FormSubmit’s “Activate Form” email (including Spam), open the link, then submit this form again.",
+        );
+        return;
+      }
+      throw new Error(payload.message || "Send failed");
+    } catch {
+      setSendError("The inquiry could not be sent. Please email fieldscholar.info@gmail.com.");
+    } finally {
+      setSending(false);
+    }
+  }
   return <main>
     <header className="site-header"><Link className="brand" href="/" aria-label="FieldScholar home"><span className="brand-mark">FS</span><span>FieldScholar</span></Link><button className="menu-button" onClick={()=>setMenu(!menu)} aria-expanded={menu} aria-label="Toggle menu">{menu ? "Close" : "Menu"}</button><nav className={menu ? "open" : ""} aria-label="Primary navigation" onClick={()=>setMenu(false)}><a href="#product">Product</a><a href="#schools">For Schools</a><a href="#universities">For Universities</a><a href="#learning">Learning in the Field</a><a href="#safety">Safety & Privacy</a><a href="#about">About</a><a className="nav-cta" href="#pilot">Request a Pilot</a></nav></header>
 
@@ -35,7 +98,7 @@ export default function Home() {
 
     <section className="about section" id="about"><div className="section-no light">07 / ORIGIN</div><p className="eyebrow light">Built from the program outward</p><h2>A product perspective grounded in the lived academic experience.</h2><p>FieldScholar emerged from direct experience designing and leading international and experiential learning programs. Its development is informed by global learning, experiential pedagogy, digital humanities, student experience, faculty program leadership, and institutional travel realities.</p></section>
 
-    <section className="pilot section" id="pilot"><div className="pilot-copy"><div className="section-no">08 / PILOT</div><p className="eyebrow">A thoughtful first step</p><h2>Bring your next program into FieldScholar.</h2><p>We are working with institutions interested in piloting a more coherent digital experience for learning beyond the classroom.</p><p className="privacy-copy">We ask only for what helps us understand your program. No tracking, no mailing-list tricks.</p></div>{sent?<div className="success" role="status"><span>✓</span><h3>Thank you.</h3><p>Your inquiry is ready for connection to FieldScholar’s secure contact workflow.</p><button className="text-link" onClick={()=>setSent(false)}>Send another inquiry</button></div>:<form onSubmit={submit}><label>Name<input required name="name" autoComplete="name"/></label><label>Institution<input required name="institution"/></label><div className="form-row"><label>Role<input required name="role"/></label><label>Email<input required type="email" name="email" autoComplete="email"/></label></div><div className="form-row"><label>Type of program<select name="type" required defaultValue=""><option value="" disabled>Select one</option><option>Study abroad</option><option>Faculty-led</option><option>Field research</option><option>Secondary education</option><option>Experiential learning</option><option>Other</option></select></label><label>Approx. participants<input name="participants" inputMode="numeric"/></label></div><label>Where / when does the program run?<input name="where-when"/></label><label>What are you hoping to improve?<textarea required name="improve" rows={3}/></label><label>Optional message<textarea name="message" rows={2}/></label><button className="button primary" type="submit">Request a conversation <span>↗</span></button></form>}</section>
+    <section className="pilot section" id="pilot"><div className="pilot-copy"><div className="section-no">08 / PILOT</div><p className="eyebrow">A thoughtful first step</p><h2>Bring your next program into FieldScholar.</h2><p>We are working with institutions interested in piloting a more coherent digital experience for learning beyond the classroom.</p><p className="privacy-copy">We ask only for what helps us understand your program. No tracking, no mailing-list tricks.</p></div>{sent?<div className="success" role="status"><span>✓</span><h3>Thank you.</h3><p>Your inquiry was sent to fieldscholar.info@gmail.com.</p><button className="text-link" onClick={()=>setSent(false)}>Send another inquiry</button></div>:<form onSubmit={submit}><input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true" /><label>Name<input required name="name" autoComplete="name"/></label><label>Institution<input required name="institution"/></label><div className="form-row"><label>Role<input required name="role"/></label><label>Email<input required type="email" name="email" autoComplete="email"/></label></div><div className="form-row"><label>Type of program<select name="type" required defaultValue=""><option value="" disabled>Select one</option><option>Study abroad</option><option>Faculty-led</option><option>Field research</option><option>Secondary education</option><option>Experiential learning</option><option>Other</option></select></label><label>Approx. participants<input name="participants" inputMode="numeric"/></label></div><label>Where / when does the program run?<input name="where-when"/></label><label>What are you hoping to improve?<textarea required name="improve" rows={3}/></label><label>Optional message<textarea name="message" rows={2}/></label>{sendError?<p className="form-error" role="alert">{sendError}</p>:null}<button className="button primary" type="submit" disabled={sending}>{sending ? "Sending…" : <>Request a conversation <span>↗</span></>}</button></form>}</section>
 
     <footer><div><Link className="brand" href="/"><span className="brand-mark">FS</span><span>FieldScholar<small>A Global Learning Companion</small></span></Link></div><div><a href="#product">Product</a><a href="#schools">Schools</a><a href="#universities">Universities</a><a href="#safety">Safety & Privacy</a></div><div><a href="#about">About</a><a href="#pilot">Contact</a><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div><p>© {new Date().getFullYear()} FieldScholar</p></footer>
   </main>
