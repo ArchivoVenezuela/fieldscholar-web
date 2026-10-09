@@ -1,96 +1,133 @@
 "use client";
-import Link from "next/link";
+
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import Link from "next/link";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 
-const pillars = [
-  ["01", "Program", "The practical shape of each day.", "Itineraries · Housing · Contacts · Resources · Program tools"],
-  ["02", "Field", "A place to notice what matters.", "Notes · Observations · Reflection · Multimedia · Place-based learning"],
-  ["03", "Connect", "The right information, in context.", "Faculty communication · Program updates · Linked course tools"],
-  ["04", "Safe", "Calm access to help when it counts.", "Emergency contacts · I’m Safe · Urgent information · Privacy-conscious tools"],
-];
-
-const walkthrough = [
-  {
-    id: "today",
-    kicker: "A · Start the day",
-    title: "Start the day knowing what matters.",
-    copy: "Today’s schedule, meeting points, activities, resources and updates stay together in one place.",
-    src: "/product/schedule.webp",
-    alt: "FieldScholar Program Schedule showing Week 1 days in Querétaro, including arrival, classes, and the trip to Teotihuacán.",
-    caption: "Program Schedule in the current pilot.",
-  },
-  {
-    id: "housing",
-    kicker: "B · Housing",
-    title: "Housing details when students actually need them.",
-    copy: "Address, access information, contacts and practical notes stay with the student instead of disappearing into old emails or PDFs.",
-    src: "/product/stay.webp",
-    alt: "FieldScholar My Stay screen with host family, address, phone, maps link, and notes for housing in Querétaro.",
-    caption: "My Stay — host family and housing.",
-  },
-  {
-    id: "field",
-    kicker: "C · Learn in the field",
-    title: "Capture the experience while it is happening.",
-    copy: "Students can document observations, reflection and place-based learning while the field is still part of the learning process.",
-    src: "/product/trips.webp",
-    alt: "FieldScholar Trips list with Teotihuacán, San Miguel de Allende, Guanajuato, and Bernal, each with Start observation.",
-    caption: "Trips — start an observation from the excursion itself.",
-  },
-  {
-    id: "connect",
-    kicker: "D · Stay connected",
-    title: "The right information, in context.",
-    copy: "Faculty can surface program information and updates without turning FieldScholar into another general-purpose chat platform. Call and WhatsApp reach the program’s faculty contact; course tools such as Slack and Canvas remain linked, not rebuilt.",
-    src: "/product/home.webp",
-    alt: "FieldScholar home with emergency faculty contact, Today / Next up, New note, View schedule, and My Stay.",
-    caption: "Home — faculty contact, today’s program, and quick actions.",
-  },
-  {
-    id: "safety",
-    kicker: "E · Safety",
-    title: "Safety without surveillance.",
-    copy: "Help stays reachable. Continuous location tracking does not. I’m Safe: one tap begins a prefilled safety message to the program’s primary faculty contact.",
-    src: "/product/safety.webp",
-    alt: "FieldScholar Safety Center with emergency contacts, program director, faculty co-leader, in-country contacts, and accommodation.",
-    caption: "Safety Center in the current pilot.",
-  },
-  {
-    id: "faculty",
-    kicker: "F · Faculty",
-    title: "What a program leader can do.",
-    copy: "Faculty can review student progress, open Program Setup, manage homestays, and keep schedule, map, and course tools in one configured program environment.",
-    src: "/product/faculty.webp",
-    alt: "FieldScholar Faculty Dashboard with Program Setup, Homestays Manager, student documents, and program resources including Slack and Canvas.",
-    caption: "Faculty Dashboard in the current pilot.",
-  },
-];
-
-function ProductShot({
-  src,
-  alt,
-  caption,
-  priority = false,
-}: {
+type Shot = {
   src: string;
   alt: string;
   caption: string;
-  priority?: boolean;
-}) {
+  width: number;
+  height: number;
+  fit?: "cover" | "natural";
+  plain?: boolean;
+};
+
+const nav = [
+  ["#features", "Features"],
+  ["#faculty", "Faculty & Institutions"],
+  ["#safety", "Safety & Privacy"],
+  ["#about", "About"],
+  ["#contact", "Contact"],
+];
+
+const features: { n: string; title: string; copy: ReactNode; note?: ReactNode; shots: Shot[] }[] = [
+  {
+    n: "01",
+    title: "Program",
+    copy: "Schedules and itineraries, housing assignments with host contacts and map links, trips, meeting points, program contacts, and in-country resources, configured for each program.",
+    shots: [
+      {
+        src: "/v2/s-schedule.jpg",
+        alt: "Program Schedule, Week 1 in Querétaro: arrival, free time, classes, and cultural sessions",
+        caption: "Program Schedule",
+        width: 2734,
+        height: 1828,
+        fit: "cover",
+      },
+      {
+        src: "/v2/s-map.jpg",
+        alt: "Program Map with shared meeting points and key locations in Querétaro",
+        caption: "Program Map",
+        width: 2784,
+        height: 1874,
+        fit: "cover",
+      },
+    ],
+  },
+  {
+    n: "02",
+    title: "Field",
+    copy: "Field notes, site observations, and guided reflections. Students can start an observation directly from a scheduled excursion.",
+    note: (
+      <p className="feature-note">
+        <span className="tag tag-outline">Planned</span>
+        Annotation and geospatial tools
+      </p>
+    ),
+    shots: [
+      {
+        src: "/v2/s-notes.jpg",
+        alt: "Notes with Daily note, Reflection, and Trip note actions, type filter, and export",
+        caption: "Notes — daily, reflection, trip",
+        width: 2790,
+        height: 1844,
+        fit: "cover",
+      },
+    ],
+  },
+  {
+    n: "03",
+    title: "Connect",
+    copy: "The home screen shows today's program and the faculty contact, reachable by phone or WhatsApp. Course platforms such as Canvas and Slack are linked from the app rather than replicated.",
+    shots: [
+      {
+        src: "/v2/s-home.jpg",
+        alt: "Student home with Call and WhatsApp Faculty Leader, one-time location sharing, Today / Next up, quick actions, and My Stay",
+        caption: "Student home",
+        width: 1572,
+        height: 1802,
+        fit: "cover",
+      },
+    ],
+  },
+  {
+    n: "04",
+    title: "Safe",
+    copy: (
+      <>
+        The Safety Center lists emergency numbers, faculty leaders, in-country contacts, accommodation, and insurance information. It also holds the student-only &ldquo;I&apos;m Safe&rdquo; action.{" "}
+        <a href="#safety">How it works</a>
+      </>
+    ),
+    shots: [
+      {
+        src: "/v2/s-safety.jpg",
+        alt: "Safety Center with emergency contacts, faculty leaders, in-country contacts, accommodation, and insurance",
+        caption: "Safety Center",
+        width: 1598,
+        height: 1812,
+        fit: "cover",
+      },
+    ],
+  },
+];
+
+const facultyTools = [
+  "Program Setup and resources",
+  "Student Records",
+  "Homestays Manager",
+  "Itinerary and excursion editing",
+  "Emergency and safety content",
+  "Arrival roster and participant data tools",
+];
+
+const safetyFacts = [
+  ["Contacts", "Emergency numbers and faculty contacts are available from the home screen and the Safety Center."],
+  ["“I'm Safe”", "Opens a prefilled WhatsApp message to the program's primary faculty contact. The student sends it from WhatsApp; nothing is sent automatically, and the action does not depend on cloud synchronization."],
+  ["Location", "A separate, student-initiated action shares the current location once, after confirmation. FieldScholar does not track student location continuously."],
+  ["Data", "Access is restricted to approved participants. Student and faculty paths are separate, and information is visible according to role."],
+];
+
+function Marks() {
   return (
-    <figure className="product-shot">
-      <Image
-        src={src}
-        alt={alt}
-        width={1360}
-        height={2000}
-        priority={priority}
-        loading={priority ? undefined : "lazy"}
-        sizes="(max-width: 720px) 100vw, 42vw"
-      />
-      <figcaption className="image-caption">{caption}</figcaption>
-    </figure>
+    <>
+      <i className="corner tl" aria-hidden="true" />
+      <i className="corner tr" aria-hidden="true" />
+      <i className="corner bl" aria-hidden="true" />
+      <i className="corner br" aria-hidden="true" />
+    </>
   );
 }
 
@@ -99,6 +136,39 @@ export default function Home() {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState("");
+  const [zoom, setZoom] = useState<Shot | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!zoom) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setZoom(null);
+      const trigger = triggerRef.current;
+      if (trigger) window.setTimeout(() => trigger.focus(), 0);
+    }
+    window.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [zoom]);
+
+  function openZoom(shot: Shot, trigger: HTMLButtonElement) {
+    triggerRef.current = trigger;
+    setZoom(shot);
+  }
+
+  function closeZoom() {
+    setZoom(null);
+    const trigger = triggerRef.current;
+    if (trigger) window.setTimeout(() => trigger.focus(), 0);
+  }
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSendError("");
@@ -117,9 +187,7 @@ export default function Home() {
     const whereWhen = field("where-when");
     const improve = field("improve");
     const message = field("message");
-    const subject = institution
-      ? `FieldScholar pilot inquiry — ${institution}`
-      : "FieldScholar pilot inquiry";
+    const subject = institution ? `FieldScholar pilot inquiry — ${institution}` : "FieldScholar pilot inquiry";
     setSending(true);
     try {
       const res = await fetch("https://formsubmit.co/ajax/fieldscholar.info@gmail.com", {
@@ -161,350 +229,402 @@ export default function Home() {
       setSending(false);
     }
   }
+
   return (
-    <main>
+    <>
       <header className="site-header">
-        <Link className="brand" href="/" aria-label="FieldScholar home">
-          <span className="brand-mark">FS</span>
-          <span>FieldScholar</span>
-        </Link>
-        <button className="menu-button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-label="Toggle menu">
-          {menu ? "Close" : "Menu"}
-        </button>
-        <nav className={menu ? "open" : ""} aria-label="Primary navigation">
-          <a href="#product" onClick={() => setMenu(false)}>Product</a>
-          <a href="#schools" onClick={() => setMenu(false)}>For Schools</a>
-          <a href="#universities" onClick={() => setMenu(false)}>For Universities</a>
-          <a href="#learning" onClick={() => setMenu(false)}>Learning in the Field</a>
-          <a href="#safety" onClick={() => setMenu(false)}>Safety & Privacy</a>
-          <a href="#about" onClick={() => setMenu(false)}>About</a>
-          <a className="nav-cta" href="#pilot" onClick={() => setMenu(false)}>Request a Pilot</a>
+        <nav className="nav shell" aria-label="Primary">
+          <Link className="nav-brand" href="/" aria-label="FieldScholar home">
+            <Image src="/mark.png" alt="" width={32} height={32} />
+            <span>FieldScholar</span>
+          </Link>
+          <button
+            className="menu-button"
+            type="button"
+            aria-expanded={menu}
+            aria-controls="primary-links"
+            onClick={() => setMenu((open) => !open)}
+          >
+            {menu ? "Close" : "Menu"}
+          </button>
+          <div className={menu ? "nav-links open" : "nav-links"} id="primary-links">
+            {nav.map(([href, label]) => (
+              <a key={href} href={href} onClick={() => setMenu(false)}>
+                {label}
+              </a>
+            ))}
+          </div>
         </nav>
       </header>
 
-      <section className="hero" id="product">
-        <div className="topo" aria-hidden="true" />
-        <div className="hero-copy">
-          <p className="eyebrow">A global learning companion</p>
-          <h1>Learning goes further when everything travels together.</h1>
-          <p className="lede">
-            FieldScholar brings program information, field learning, communication, and safety into one mobile-first experience for students and faculty on experiential and international programs.
-          </p>
-          <div className="hero-actions">
-            <a className="button primary" href="#pilot">Request a Pilot <span>↗</span></a>
-            <a className="text-link" href="#in-action">See FieldScholar in action <span>↓</span></a>
-          </div>
-        </div>
-        <div className="hero-editorial">
-          <Image
-            src="/fieldscholar-hero.webp"
-            alt="FieldScholar mobile companion with program schedule, field observation, safety, and reflection tools"
-            width={1400}
-            height={933}
-            priority
-            sizes="(max-width: 900px) 100vw, 48vw"
-          />
-          <span className="image-caption">The program, held together · Mobile-first by design</span>
-        </div>
-        <div className="hero-foot">
-          <span>Before departure</span>
-          <i />
-          <span>In the field</span>
-          <i />
-          <span>Throughout the program</span>
-        </div>
-      </section>
-
-      <section className="problem section" id="experience">
-        <div className="section-no">01 / THE PROBLEM</div>
-        <div className="problem-heading">
-          <p className="eyebrow">One continuous experience</p>
-          <h2>The experience is connected.<br /><em>The tools usually aren’t.</em></h2>
-        </div>
-        <div className="fragments">
-          <span>Email</span>
-          <span>PDFs</span>
-          <span>Messaging apps</span>
-          <span>Shared documents</span>
-          <span>LMS</span>
-          <span>Travel systems</span>
-          <span>Paper itineraries</span>
-          <span>Contact sheets</span>
-        </div>
-        <p className="problem-close">FieldScholar does not replace those tools. It gives students one place to live the program.</p>
-      </section>
-
-      <section className="walkthrough section" id="in-action">
-        <div className="section-no">02 / IN ACTION</div>
-        <div className="walk-intro">
-          <p className="eyebrow">See FieldScholar in action</p>
-          <h2>One program. One mobile experience.</h2>
-          <p>The information and tools students actually need while they are abroad — shown here from the current FieldScholar pilot.</p>
-        </div>
-        {walkthrough.map((step, i) => (
-          <article className={`walk-step${i % 2 ? " reverse" : ""}`} key={step.id} id={step.id}>
-            <div className="walk-copy">
-              <p className="tiny-label">{step.kicker}</p>
-              <h3>{step.title}</h3>
-              <p>{step.copy}</p>
-              {step.id === "safety" ? (
-                <div className="no-track compact">
-                  <span>◎</span>
-                  <strong>No continuous location tracking.</strong>
-                </div>
-              ) : null}
-            </div>
-            <ProductShot src={step.src} alt={step.alt} caption={step.caption} />
-          </article>
-        ))}
-      </section>
-
-      <section className="dimensions section">
-        <div className="section-no">03 / FOUR DIMENSIONS</div>
-        <div className="section-intro compact-intro">
-          <p className="eyebrow">What you just saw</p>
-          <h2>Program. Field. Connect. Safe.</h2>
-        </div>
-        <div className="pillar-list">
-          {pillars.map(([n, title, sub, items]) => (
-            <article key={title}>
-              <span>{n}</span>
-              <div>
-                <h3>{title}</h3>
-                <p>{sub}</p>
-              </div>
-              <small>{items}</small>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="safety section" id="safety">
-        <div className="section-no">04 / SAFETY & PRIVACY</div>
-        <div className="safety-grid">
-          <div>
-            <p className="eyebrow">A product principle</p>
-            <h2>Safety without surveillance.</h2>
-            <p className="big-copy">
-              Students need fast access to help and institutions need reliable ways to communicate during serious events. That does not require continuous location tracking.
+      <main>
+        <section className="hero shell" id="overview">
+          <div className="hero-copy">
+            <p className="kicker">A Global Learning Companion</p>
+            <h1>FieldScholar</h1>
+            <p className="lede">
+              FieldScholar is a mobile-first application for study abroad, field-based courses, and experiential learning programs. It brings together program schedules, housing information, academic fieldwork, faculty communication, and safety resources in a configurable environment for students and program leaders.
             </p>
-            <div className="no-track">
-              <span>◎</span>
-              <strong>No continuous<br />location tracking.</strong>
-            </div>
-            <div className="safe-flow">
-              <span className="flow-label">Available in the pilot</span>
-              <div className="safe-button">
-                <span>✓</span>
-                <strong>I’m Safe</strong>
-                <small>One tap begins a prefilled message to the program’s primary faculty contact.</small>
-              </div>
-              <div className="arrow">↓</div>
-              <p>Student’s chosen <strong>safety communication path</strong></p>
-              <hr />
-              <span className="flow-label">Planned institutional capability</span>
-              <p className="institution-flow">Institution <b>→</b> Program <b>→</b> Cohort <b>→</b> Appropriate recipients</p>
-              <p className="planned-note">Institutional emergency communication, targeted alerts, and recipient selection by program or cohort are not in the current pilot.</p>
-            </div>
+            <dl className="blueprint spec">
+              <Marks />
+              <dt>Status</dt>
+              <dd>Functional pilot with a faculty-led program</dd>
+              <dt>Interface</dt>
+              <dd>Mobile-first web app; also works in a desktop browser</dd>
+              <dt>Access</dt>
+              <dd>Approved program participants only</dd>
+            </dl>
+            <a href="#features" className="btn btn-ghost">Application features ↓</a>
           </div>
-          <figure className="safe-visual">
-            <Image
-              src="/safety-companion.webp"
-              alt="FieldScholar safety actions: call faculty, WhatsApp faculty, and optional one-time location sharing"
-              width={1280}
-              height={960}
-              loading="lazy"
-              sizes="(max-width: 900px) 100vw, 44vw"
-            />
-            <figcaption className="image-caption">Student control stays visible in every safety action.</figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section className="learning section" id="learning">
-        <div className="section-no">05 / LEARNING IN THE FIELD</div>
-        <div className="learning-head">
-          <p className="eyebrow">Place is part of the curriculum</p>
-          <h2>The field is part<br />of the classroom.</h2>
-          <p>FieldScholar gives students a structured place to observe, document, interpret and reflect while experiences are still unfolding.</p>
-        </div>
-        <div className="journal">
-          <div className="journal-photo">
-            <Image
-              src="/field-learning.webp"
-              alt="FieldScholar Notes on a phone beside a field notebook, with daily note, reflection, and trip note actions"
-              width={1280}
-              height={960}
-              loading="lazy"
-              sizes="(max-width: 900px) 100vw, 50vw"
-            />
-            <span>NOTES · DAILY · REFLECTION · TRIP</span>
-          </div>
-          <div className="journal-note">
-            <span className="tiny-label">In the current pilot</span>
-            <h3>Notes, observations, and reflection</h3>
-            <p>Students start a daily note, a reflection, or a trip observation from the program they are already in — including from a specific excursion.</p>
-            <div className="media-row">
-              <span>Daily note</span>
-              <span>Reflection</span>
-              <span>Trip observation</span>
-              <span>Photo &amp; media</span>
-            </div>
-            <ProductShot
-              src="/product/notes.webp"
-              alt="FieldScholar Notes with Daily note, All types filter, and empty-state prompt to start from a trip"
-              caption="Notes — daily entries, trip notes, and reflections."
-            />
-          </div>
-        </div>
-        <div className="learning-tools">
-          <span>Field notes</span>
-          <span>Reflection</span>
-          <span>Multimedia</span>
-          <span>Site observation</span>
-          <span className="planned-chip">Annotation <small>planned</small></span>
-          <span className="planned-chip">Geospatial work <small>planned</small></span>
-        </div>
-      </section>
-
-      <section className="audiences">
-        <article id="schools">
-          <span className="audience-no">FOR SCHOOLS / 01</span>
-          <h2>More confidence for students. More clarity for the people responsible for them.</h2>
-          <p>Give every international, cultural, service, or experiential program its own configured environment — simple for students, dependable for faculty, and privacy-conscious by design.</p>
-          <ul>
-            <li>Itinerary, housing &amp; resources</li>
-            <li>Faculty &amp; emergency contacts</li>
-            <li>Field learning &amp; reflection</li>
-            <li>Urgent communication</li>
-          </ul>
-          <a href="#pilot" className="text-link">Explore a school pilot →</a>
-        </article>
-        <article id="universities">
-          <span className="audience-no">FOR UNIVERSITIES / 02</span>
-          <h2>Built to grow from programs to institutions.</h2>
-          <p>The current pilot is configured at program level. The intended institutional shape is already visible:</p>
-          <div className="architecture">
-            <span>Institution</span>
-            <b>→</b>
-            <span>Program</span>
-            <b>→</b>
-            <span>Cohort</span>
-            <b>→</b>
-            <span>Membership + Roles</span>
-          </div>
-          <p className="planned">
-            <strong>Planned institutional capabilities</strong>
-            Program Builder · Roster management · Role-based permissions · SSO · Integrations · Auditability · Data lifecycle
-          </p>
-        </article>
-      </section>
-
-      <section className="clarity section">
-        <div className="section-no">06 / CLEAR BY DESIGN</div>
-        <h2>What FieldScholar is—<br />and what it isn’t.</h2>
-        <div className="contrast compact-contrast">
-          <div>
-            <h3>FieldScholar is</h3>
-            <p>↗ A global learning companion</p>
-            <p>↗ A configurable program layer</p>
-            <p>↗ A student-centered mobile experience</p>
-            <p>↗ A bridge between logistics, learning, communication, and safety</p>
-          </div>
-          <div>
-            <h3>FieldScholar isn’t</h3>
-            <p>× An LMS</p>
-            <p>× A general-purpose chat platform</p>
-            <p>× A travel agency system</p>
-            <p>× A continuous student tracking system</p>
-            <p>× A replacement for institutional emergency infrastructure</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="about section" id="about">
-        <div className="section-no light">07 / ORIGIN</div>
-        <p className="eyebrow light">Built from the program outward</p>
-        <h2>A product perspective grounded in the lived academic experience.</h2>
-        <p>
-          FieldScholar emerged from direct experience designing and leading international and experiential learning programs. Its development is informed by global learning, experiential pedagogy, digital humanities, student experience, faculty program leadership, and institutional travel realities.
-        </p>
-      </section>
-
-      <section className="pilot section" id="pilot">
-        <div className="pilot-copy">
-          <div className="section-no">08 / PILOT</div>
-          <p className="eyebrow">A thoughtful first step</p>
-          <h2>Bring your next program into FieldScholar.</h2>
-          <p>We are working with institutions interested in piloting a more coherent digital experience for learning beyond the classroom.</p>
-          <a className="text-link pdf-link" href="/fieldscholar-overview.pdf" target="_blank" rel="noopener noreferrer">
-            Download FieldScholar overview (PDF) <span>↗</span>
-          </a>
-          <p className="privacy-copy">We ask only for what helps us understand your program. No tracking, no mailing-list tricks.</p>
-        </div>
-        {sent ? (
-          <div className="success" role="status">
-            <span>✓</span>
-            <h3>Thank you.</h3>
-            <p>Your inquiry was sent to fieldscholar.info@gmail.com.</p>
-            <button className="text-link" onClick={() => setSent(false)}>Send another inquiry</button>
-          </div>
-        ) : (
-          <form onSubmit={submit}>
-            <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-            <label>Name<input required name="name" autoComplete="name" /></label>
-            <label>Institution<input required name="institution" /></label>
-            <div className="form-row">
-              <label>Role<input required name="role" /></label>
-              <label>Email<input required type="email" name="email" autoComplete="email" /></label>
-            </div>
-            <div className="form-row">
-              <label>
-                Type of program
-                <select name="type" required defaultValue="">
-                  <option value="" disabled>Select one</option>
-                  <option>Study abroad</option>
-                  <option>Faculty-led</option>
-                  <option>Field research</option>
-                  <option>Secondary education</option>
-                  <option>Experiential learning</option>
-                  <option>Other</option>
-                </select>
-              </label>
-              <label>Approx. participants<input name="participants" inputMode="numeric" /></label>
-            </div>
-            <label>Where / when does the program run?<input name="where-when" /></label>
-            <label>What are you hoping to improve?<textarea required name="improve" rows={3} /></label>
-            <label>Optional message<textarea name="message" rows={2} /></label>
-            {sendError ? <p className="form-error" role="alert">{sendError}</p> : null}
-            <button className="button primary" type="submit" disabled={sending}>
-              {sending ? "Sending…" : <>Request a conversation <span>↗</span></>}
+          <figure className="hero-figure">
+            <button
+              type="button"
+              className="blueprint shot-frame plain"
+              aria-label="Enlarge: FieldScholar student app"
+              onClick={(e) =>
+                openZoom(
+                  {
+                    src: "/v2/s-hero.jpg",
+                    alt: "FieldScholar mobile screens: schedule, field observation, safety, and reflection",
+                    caption: "Student app, current pilot",
+                    width: 1400,
+                    height: 934,
+                    fit: "natural",
+                    plain: true,
+                  },
+                  e.currentTarget,
+                )
+              }
+            >
+              <Marks />
+              <Image
+                src="/v2/s-hero.jpg"
+                alt="FieldScholar mobile screens: schedule, field observation, safety, and reflection"
+                width={1400}
+                height={934}
+                priority
+                sizes="(max-width: 900px) 100vw, 50vw"
+              />
             </button>
-          </form>
-        )}
-      </section>
+            <figcaption>Student app, current pilot</figcaption>
+          </figure>
+        </section>
 
-      <footer>
-        <div>
-          <Link className="brand" href="/">
-            <span className="brand-mark">FS</span>
-            <span>FieldScholar<small>A Global Learning Companion</small></span>
-          </Link>
+        <section className="band" id="features">
+          <div className="shell features-intro">
+            <h2 className="section-title">Application features</h2>
+            <p className="intro-note">
+              Four areas of the student app. Screenshots are from the current pilot, with personal details obscured; select one to enlarge it.
+            </p>
+          </div>
+          <div className="shell">
+            {features.map((feature) => (
+              <article className="feature" key={feature.n}>
+                <div className="feature-copy">
+                  <p className="feature-num">{feature.n}</p>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.copy}</p>
+                  {feature.note}
+                </div>
+                <div className="feature-shots">
+                  {feature.shots.map((shot) => (
+                    <figure className="shot" key={shot.src}>
+                      <button
+                        type="button"
+                        className="blueprint shot-frame"
+                        aria-label={`Enlarge: ${shot.caption}`}
+                        onClick={(e) => openZoom(shot, e.currentTarget)}
+                      >
+                        <Marks />
+                        <Image
+                          src={shot.src}
+                          alt={shot.alt}
+                          width={shot.width}
+                          height={shot.height}
+                          className={shot.fit === "cover" ? "shot-cover" : undefined}
+                          sizes="(max-width: 900px) 100vw, 36vw"
+                        />
+                      </button>
+                      <figcaption>{shot.caption}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="band band-surface" id="faculty">
+          <div className="shell faculty-layout">
+            <div className="faculty-copy">
+              <h2 className="section-title">Faculty &amp; program administration</h2>
+              <p>Program leaders use a separate faculty path that requires an additional verification step. In the current pilot it includes:</p>
+              <ul className="faculty-list">
+                {facultyTools.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <div className="institution">
+                <h3>Institutional architecture</h3>
+                <p>
+                  FieldScholar is being developed as one configurable platform for multiple institutions and programs, rather than separate codebases per program. Access and data are organized as:
+                </p>
+                <p className="blueprint architecture">
+                  <Marks />
+                  Institution <span aria-hidden="true">→</span> Program <span aria-hidden="true">→</span> Cohort <span aria-hidden="true">→</span> Membership / Role
+                </p>
+              </div>
+              <div className="status-grid">
+                <div className="status-card">
+                  <span className="tag tag-accent">In the pilot</span>
+                  <p>Program-level configuration for a single faculty-led program.</p>
+                </div>
+                <div className="status-card">
+                  <span className="tag tag-neutral">In development</span>
+                  <p>Institution and membership layer, program and cohort creation, roster import. Validated separately from the live pilot.</p>
+                </div>
+                <div className="status-card">
+                  <span className="tag tag-outline">Planned</span>
+                  <p>Program Builder, single sign-on (SSO), institutional emergency alerts, platform integrations.</p>
+                </div>
+              </div>
+            </div>
+            <figure className="faculty-figure">
+              <button
+                type="button"
+                className="blueprint shot-frame"
+                aria-label="Enlarge: Faculty Dashboard"
+                onClick={(e) =>
+                  openZoom(
+                    {
+                      src: "/v2/s-faculty.jpg",
+                      alt: "Faculty Dashboard with Program Setup, Student Records, Participant Data Tools, Homestays Manager, student documents, and program resources",
+                      caption: "Faculty Dashboard",
+                      width: 2736,
+                      height: 1862,
+                      fit: "cover",
+                    },
+                    e.currentTarget,
+                  )
+                }
+              >
+                <Marks />
+                <Image
+                  src="/v2/s-faculty.jpg"
+                  alt="Faculty Dashboard with Program Setup, Student Records, Participant Data Tools, Homestays Manager, student documents, and program resources"
+                  width={2736}
+                  height={1862}
+                  className="shot-cover"
+                  sizes="(max-width: 900px) 100vw, 44vw"
+                />
+              </button>
+              <figcaption>Faculty Dashboard</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section className="band" id="safety">
+          <div className="shell safety-layout">
+            <div className="safety-copy">
+              <h2 className="section-title">Safety &amp; privacy</h2>
+              <dl className="safety-list">
+                {safetyFacts.map(([term, detail]) => (
+                  <div className="safety-row" key={term}>
+                    <dt>{term}</dt>
+                    <dd>{detail}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="planned-note">
+                <span className="tag tag-outline">Planned</span>
+                Institutional emergency alerts targeted by program or cohort. Not part of the current pilot.
+              </p>
+            </div>
+            <div className="safety-shots">
+              <figure className="shot">
+                <button
+                  type="button"
+                  className="blueprint shot-frame"
+                  aria-label="Enlarge: I Am Safe"
+                  onClick={(e) =>
+                    openZoom(
+                      {
+                        src: "/v2/s-imsafe.jpg",
+                        alt: "Safety Center with the I Am Safe button, faculty leader WhatsApp and call buttons, and emergency contacts",
+                        caption: "“I Am Safe” — opens a prefilled WhatsApp message",
+                        width: 1736,
+                        height: 1710,
+                        fit: "cover",
+                      },
+                      e.currentTarget,
+                    )
+                  }
+                >
+                  <Marks />
+                  <Image
+                    src="/v2/s-imsafe.jpg"
+                    alt="Safety Center with the I Am Safe button, faculty leader WhatsApp and call buttons, and emergency contacts"
+                    width={1736}
+                    height={1710}
+                    className="shot-cover"
+                    sizes="(max-width: 900px) 100vw, 44vw"
+                  />
+                </button>
+                <figcaption>&ldquo;I Am Safe&rdquo; — opens a prefilled WhatsApp message</figcaption>
+              </figure>
+              <figure className="shot">
+                <button
+                  type="button"
+                  className="blueprint shot-frame plain"
+                  aria-label="Enlarge: safety actions"
+                  onClick={(e) =>
+                    openZoom(
+                      {
+                        src: "/v2/s-companion.jpg",
+                        alt: "Safety actions: call faculty, WhatsApp faculty, and optional one-time location sharing",
+                        caption: "Safety actions: call, WhatsApp, one-time location",
+                        width: 1280,
+                        height: 960,
+                        fit: "natural",
+                        plain: true,
+                      },
+                      e.currentTarget,
+                    )
+                  }
+                >
+                  <Marks />
+                  <Image
+                    src="/v2/s-companion.jpg"
+                    alt="Safety actions: call faculty, WhatsApp faculty, and optional one-time location sharing"
+                    width={1280}
+                    height={960}
+                    sizes="(max-width: 900px) 100vw, 44vw"
+                  />
+                </button>
+                <figcaption>Safety actions: call, WhatsApp, one-time location</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section className="band" id="about">
+          <div className="shell about-layout">
+            <h2>About the project</h2>
+            <p>
+              FieldScholar was developed from experience designing and directing international and experiential learning programs. The project combines practical program management with an emphasis on field-based learning, reflection, student safety, and digital humanities.
+            </p>
+          </div>
+        </section>
+
+        <section className="band band-surface" id="contact">
+          <div className="shell contact-layout">
+            <div className="contact-copy">
+              <h2 className="section-title">Contact &amp; pilot inquiries</h2>
+              <p>Faculty and institutions interested in using FieldScholar for a program can write to us here. Inquiries go to fieldscholar.info@gmail.com.</p>
+              <a className="btn btn-secondary" href="/fieldscholar-overview.pdf" target="_blank" rel="noopener noreferrer">
+                Project overview (PDF) ↗
+              </a>
+            </div>
+            <div className="contact-form">
+              {sent ? (
+                <div className="blueprint success" role="status">
+                  <Marks />
+                  <h3>Thank you.</h3>
+                  <p>Your inquiry was sent to fieldscholar.info@gmail.com.</p>
+                  <button className="btn btn-ghost" type="button" onClick={() => setSent(false)}>
+                    Send another inquiry
+                  </button>
+                </div>
+              ) : (
+                <form className="inquiry-form" onSubmit={submit}>
+                  <input className="hp" type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                  <div className="field">
+                    <label htmlFor="f-name">Name</label>
+                    <input id="f-name" className="input" name="name" required autoComplete="name" />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-inst">Institution</label>
+                    <input id="f-inst" className="input" name="institution" required autoComplete="organization" />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-role">Role</label>
+                    <input id="f-role" className="input" name="role" required />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-email">Email</label>
+                    <input id="f-email" className="input" type="email" name="email" required autoComplete="email" />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-type">Type of program</label>
+                    <select id="f-type" className="input" name="type" required defaultValue="">
+                      <option value="">Select one</option>
+                      <option>Study abroad</option>
+                      <option>Faculty-led</option>
+                      <option>Field research</option>
+                      <option>Secondary education</option>
+                      <option>Experiential learning</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-part">Approx. participants</label>
+                    <input id="f-part" className="input" name="participants" inputMode="numeric" />
+                  </div>
+                  <div className="field span-all">
+                    <label htmlFor="f-where">Where and when does the program run?</label>
+                    <input id="f-where" className="input" name="where-when" />
+                  </div>
+                  <div className="field span-all">
+                    <label htmlFor="f-improve">What would you like the platform to support?</label>
+                    <textarea id="f-improve" className="input" name="improve" rows={3} required />
+                  </div>
+                  <div className="field span-all">
+                    <label htmlFor="f-msg">Message (optional)</label>
+                    <textarea id="f-msg" className="input" name="message" rows={2} />
+                  </div>
+                  {sendError ? (
+                    <p className="form-error span-all" role="alert">
+                      {sendError}
+                    </p>
+                  ) : null}
+                  <div className="span-all">
+                    <button className="btn btn-primary blueprint" type="submit" disabled={sending}>
+                      <Marks />
+                      {sending ? "Sending…" : "Send inquiry"}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <div className="shell footer-bar">
+          <span>FieldScholar · Designed and developed by Patricia Valladares-Ruiz · © 2026</span>
+          <div className="footer-links">
+            <a href="https://fieldscholar.app">Application</a>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <a href="#contact">Contact</a>
+          </div>
         </div>
-        <div>
-          <a href="#product">Product</a>
-          <a href="#schools">Schools</a>
-          <a href="#universities">Universities</a>
-          <a href="#safety">Safety & Privacy</a>
-        </div>
-        <div>
-          <a href="#about">About</a>
-          <a href="#pilot">Contact</a>
-          <Link href="/privacy">Privacy</Link>
-          <Link href="/terms">Terms</Link>
-        </div>
-        <p>© {new Date().getFullYear()} FieldScholar</p>
       </footer>
-    </main>
+
+      {zoom ? (
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label={zoom.alt}>
+          <button className="lightbox-backdrop" type="button" aria-label="Close" onClick={closeZoom} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={zoom.src} alt={zoom.alt} />
+          <div className="lightbox-bar">
+            <p>{zoom.alt}</p>
+            <button ref={closeRef} className="btn" type="button" onClick={closeZoom}>
+              Close (Esc)
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
