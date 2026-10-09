@@ -521,9 +521,6 @@ export default function Home() {
             <div className="contact-copy">
               <h2 className="section-title">Contact &amp; pilot inquiries</h2>
               <p>Faculty and institutions interested in using FieldScholar for a program can write to us here. Inquiries go to fieldscholar.info@gmail.com.</p>
-              <a className="btn btn-secondary" href="/fieldscholar-overview.pdf" target="_blank" rel="noopener noreferrer">
-                Project overview (PDF) ↗
-              </a>
             </div>
             <div className="contact-form">
               {sent ? (
@@ -604,6 +601,9 @@ export default function Home() {
         <div className="shell footer-bar">
           <span>FieldScholar · Designed and developed by Patricia Valladares-Ruiz · © 2026</span>
           <div className="footer-links">
+            <a className="btn btn-secondary" href="/fieldscholar-project-overview.pdf" target="_blank" rel="noopener noreferrer">
+              Project Overview
+            </a>
             <a href="https://fieldscholar.app">Application</a>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
