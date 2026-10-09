@@ -87,7 +87,7 @@ const features: { n: string; title: string; copy: ReactNode; note?: ReactNode; s
     title: "Safe",
     copy: (
       <>
-        The Safety Center lists emergency numbers, faculty leaders, in-country contacts, accommodation, and insurance information. It also holds the student-only &ldquo;I&apos;m Safe&rdquo; action.{" "}
+        The Safety Center lists emergency numbers, faculty leaders, in-country contacts, accommodation, and insurance information. It also holds the student-only I AM SAFE action.{" "}
         <a href="#safety">How it works</a>
       </>
     ),
@@ -115,7 +115,7 @@ const facultyTools = [
 
 const safetyFacts = [
   ["Contacts", "Emergency numbers and faculty contacts are available from the home screen and the Safety Center."],
-  ["“I'm Safe”", "Opens a prefilled WhatsApp message to the program's primary faculty contact. The student sends it from WhatsApp; nothing is sent automatically, and the action does not depend on cloud synchronization."],
+  ["I AM SAFE", "Opens a prefilled WhatsApp message to the program's primary faculty contact. The student sends it from WhatsApp; nothing is sent automatically, and the action does not depend on cloud synchronization."],
   ["Location", "A separate, student-initiated action shares the current location once, after confirmation. FieldScholar does not track student location continuously."],
   ["Data", "Access is restricted to approved participants. Student and faculty paths are separate, and information is visible according to role."],
 ];
@@ -286,7 +286,7 @@ export default function Home() {
                   {
                     src: "/v2/s-hero.jpg",
                     alt: "FieldScholar mobile screens: schedule, field observation, safety, and reflection",
-                    caption: "Student app, current pilot",
+                    caption: "Student experience — current pilot",
                     width: 1400,
                     height: 934,
                     fit: "natural",
@@ -306,7 +306,7 @@ export default function Home() {
                 sizes="(max-width: 900px) 100vw, 50vw"
               />
             </button>
-            <figcaption>Student app, current pilot</figcaption>
+            <figcaption>Student experience — current pilot</figcaption>
           </figure>
         </section>
 
@@ -367,11 +367,11 @@ export default function Home() {
               <div className="institution">
                 <h3>Institutional architecture</h3>
                 <p>
-                  FieldScholar is being developed as one configurable platform for multiple institutions and programs, rather than separate codebases per program. Access and data are organized as:
+                  FieldScholar is designed as one configurable platform for multiple institutions and programs, rather than separate codebases per program. Access and data are organized as:
                 </p>
                 <p className="blueprint architecture">
                   <Marks />
-                  Institution <span aria-hidden="true">→</span> Program <span aria-hidden="true">→</span> Cohort <span aria-hidden="true">→</span> Membership / Role
+                  Institution <span aria-hidden="true">→</span> Program <span aria-hidden="true">→</span> Cohort <span aria-hidden="true">→</span> Membership/User <span aria-hidden="true">→</span> Role <span aria-hidden="true">→</span> Data
                 </p>
               </div>
               <div className="status-grid">
@@ -380,8 +380,8 @@ export default function Home() {
                   <p>Program-level configuration for a single faculty-led program.</p>
                 </div>
                 <div className="status-card">
-                  <span className="tag tag-neutral">In development</span>
-                  <p>Institution and membership layer, program and cohort creation, roster import. Validated separately from the live pilot.</p>
+                  <span className="tag tag-neutral">Implemented &amp; validated</span>
+                  <p>Institution and membership layer, program and cohort creation, and roster import, implemented and validated separately from the live pilot.</p>
                 </div>
                 <div className="status-card">
                   <span className="tag tag-outline">Planned</span>
@@ -445,13 +445,13 @@ export default function Home() {
                 <button
                   type="button"
                   className="blueprint shot-frame"
-                  aria-label="Enlarge: I Am Safe"
+                  aria-label="Enlarge: I AM SAFE"
                   onClick={(e) =>
                     openZoom(
                       {
                         src: "/v2/s-imsafe.jpg",
-                        alt: "Safety Center with the I Am Safe button, faculty leader WhatsApp and call buttons, and emergency contacts",
-                        caption: "“I Am Safe” — opens a prefilled WhatsApp message",
+                        alt: "Safety Center with the I AM SAFE button, faculty leader WhatsApp and call buttons, and emergency contacts",
+                        caption: "I AM SAFE — opens a prefilled WhatsApp message",
                         width: 1736,
                         height: 1710,
                         fit: "cover",
@@ -463,14 +463,14 @@ export default function Home() {
                   <Marks />
                   <Image
                     src="/v2/s-imsafe.jpg"
-                    alt="Safety Center with the I Am Safe button, faculty leader WhatsApp and call buttons, and emergency contacts"
+                    alt="Safety Center with the I AM SAFE button, faculty leader WhatsApp and call buttons, and emergency contacts"
                     width={1736}
                     height={1710}
                     className="shot-cover"
                     sizes="(max-width: 900px) 100vw, 44vw"
                   />
                 </button>
-                <figcaption>&ldquo;I Am Safe&rdquo; — opens a prefilled WhatsApp message</figcaption>
+                <figcaption>I AM SAFE — opens a prefilled WhatsApp message</figcaption>
               </figure>
               <figure className="shot">
                 <button
@@ -511,7 +511,7 @@ export default function Home() {
           <div className="shell about-layout">
             <h2>About the project</h2>
             <p>
-              FieldScholar was developed from experience designing and directing international and experiential learning programs. The project combines practical program management with an emphasis on field-based learning, reflection, student safety, and digital humanities.
+              FieldScholar was developed from experience designing and directing international and experiential learning programs. The project combines practical program management with an emphasis on experiential and field-based learning, reflection, student safety, and digital humanities.
             </p>
           </div>
         </section>
